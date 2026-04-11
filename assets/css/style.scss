@@ -47,7 +47,7 @@ header {
 
 /* Content width and spacing */
 .main-content {
-  max-width: 980px;
+  max-width: min(1500px, 96vw);
   margin: 0 auto;
   padding: 2rem 1.5rem;
 }
@@ -171,11 +171,12 @@ hr {
 
 /* Images */
 img {
+  display: block;
+  width: 100%;
+  height: auto;
   border: 1px solid var(--border);
   border-radius: 8px;
   margin: 1rem 0 1.5rem 0;
-  max-width: 100%;
-  height: auto;
 }
 
 /* Selection */
@@ -184,7 +185,7 @@ img {
   color: var(--text);
 }
 
-/* Optional: make markdown task lists and nested lists breathe a bit */
+/* Optional list spacing */
 ul,
 ol {
   padding-left: 1.4rem;
