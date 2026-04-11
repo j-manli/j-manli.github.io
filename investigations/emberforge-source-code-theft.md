@@ -88,7 +88,7 @@ The most important data exposures supported by the evidence are:
 
 ## Evidence Sources & Analysis
 
-### 1. Initial Access and First Malicious Execution
+### 1. Initial Access and First Malicious Execution  
 
 The opening brief pointed to Lisa Martin’s workstation as the likely starting point, so that was the first place to anchor the timeline. To test that lead, I started with process creation events for `user_s == "lmartin"`.
 
@@ -927,7 +927,30 @@ bt5[.]api[.]mega[.]co[.]nz
 
 ### Impact
 
-The clearest confirmed impact in the reviewed telemetry was theft of data from `C:\GameDev` on the server and compromise of domain credential material through access to `ntds.dit`.
+The clearest confirmed impact in the reviewed telemetry was theft of data from `C:\GameDev` on the server and compromise of domain credential material through access to `ntds.dit`.  
+
+## MITRE ATT&CK Mapping Summary
+
+The ATT&CK mappings below reflect the observed adversary tradecraft during the investigation.
+
+| Tactic | Technique | Why it fits this case |
+|---|---|---|
+| Execution | `T1204.002` User Execution: Malicious File | User-driven opening of content that led to execution from the extracted ISO chain |
+| Execution | `T1218.011` System Binary Proxy Execution: Rundll32 | `rundll32.exe` was used to execute `D:\review.dll` |
+| Privilege Escalation / Defense Evasion | `T1548.002` Bypass User Account Control | `fodhelper.exe` was used with the `ms-settings` registry hijack and `DelegateExecute` |
+| Defense Evasion | `T1055` Process Injection | `CreateRemoteThread` activity was observed into `notepad.exe` and later `spoolsv.exe` |
+| Credential Access | `T1003.001` OS Credential Dumping: LSASS Memory | `C:\Windows\System32\lsass.dmp` was created by `Update.exe` |
+| Discovery | `T1087.002` Account Discovery: Domain Account | `net user /domain` was used to enumerate domain accounts |
+| Discovery | `T1069.002` Permission Groups Discovery: Domain Groups | `net group "Domain Admins" /domain` was used to enumerate privileged groups |
+| Lateral Movement | `T1021.002` Remote Services: SMB/Windows Admin Shares | `update.exe` was copied to the server over `\\10.1.57.66\C$\Users\Public\update.exe` |
+| Command and Control | `T1219.002` Remote Access Tools: Remote Desktop Software | `AnyDesk` was installed and configured for continued access |
+| Collection | `T1560.001` Archive Collected Data: Archive via Utility | `Compress-Archive` was used to create `C:\Users\Public\gamedev.zip` from `C:\GameDev` |
+| Exfiltration | `T1567.002` Exfiltration to Cloud Storage | `rclone.exe` uploaded staged data to MEGA |
+| Credential Access | `T1003.003` OS Credential Dumping: NTDS | `ntds.dit` was copied from a Volume Shadow Copy on the Domain Controller |
+| Persistence | `T1136.002` Create Account: Domain Account | `svc_backup` was created as a new domain account |
+| Persistence / Privilege Escalation | `T1098.007` Account Manipulation: Additional Local or Domain Groups | `svc_backup` was added to `Domain Admins` |
+| Persistence | `T1053.005` Scheduled Task/Job: Scheduled Task | A scheduled task named `WindowsUpdate` was created to run `update.exe` as `SYSTEM` |
+| Defense Evasion | `T1070.001` Indicator Removal: Clear Windows Event Logs | `wevtutil cl Security` and `wevtutil cl System` were used to clear logs |
 
 ## Analyst Assessment
 
