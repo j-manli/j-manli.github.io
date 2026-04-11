@@ -25,7 +25,17 @@ Others leave a little more room for investigation. However, The goal is the same
       <span>Credential Access</span>
       <span>Lateral Movement</span>
       <span>Exfiltration</span>
-    </div>
+    </div>  
+
+    <p class="attack-mapping">
+      <strong>ATT&amp;CK:</strong>
+      <code>T1204.002</code>
+      <code>T1218.011</code>
+      <code>T1548.002</code>
+      <code>T1003.001</code>
+      <code>T1021.002</code>
+      <code>T1567.002</code>
+    </p>
 
     <p class="investigation-link-row">
       <a class="feature-link" href="/investigations/emberforge-source-code-theft/">Open investigation</a>
