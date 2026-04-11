@@ -2,6 +2,7 @@
 title: "EmberForge Source Code Theft"
 permalink: /investigations/emberforge-source-code-theft/
 ---
+### [Home](/) | [Investigations](/investigations/)
 
 # Security Incident Report  
 
