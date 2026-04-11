@@ -1,5 +1,5 @@
 ---
-title: "Threat Hunting and Incident Response Portfolio"
+title: "Threat Hunting and IR Case Files"
 permalink: /
 ---
 
