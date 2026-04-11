@@ -3,6 +3,8 @@ title: "Investigations"
 permalink: /investigations/
 ---
 
+[Home](/) | [Investigations](/investigations/)
+
 # Investigations
 
 This section collects full case write-ups built from telemetry, timelines, and evidence. Some reports are tighter and more technical. 
