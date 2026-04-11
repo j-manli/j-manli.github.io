@@ -7,7 +7,7 @@ permalink: /investigations/emberforge-source-code-theft/
 # Security Incident Report  
 
 <div class="callout note">
-  <div class="callout-title">Initial Reporting Context</div>
+  <div class="callout-title">Initial Brief</div>
   <p>Unreleased source code from EmberForge Studios' upcoming title, <code>Neon Shadows</code>, was identified on underground forums. The leaked material reportedly included proprietary game engine components and unreleased assets. External monitoring flagged the leak within 48 hours of its appearance.</p>
 </div>
 
