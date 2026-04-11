@@ -3,7 +3,12 @@ title: "EmberForge Source Code Theft"
 permalink: /investigations/emberforge-source-code-theft/
 ---
 
-# Security Incident Report
+# Security Incident Report  
+
+<div class="callout note">
+  <div class="callout-title">Initial Reporting Context</div>
+  <p>Unreleased source code from EmberForge Studios' upcoming title, <code>Neon Shadows</code>, was identified on underground forums. The leaked material reportedly included proprietary game engine components and unreleased assets. External monitoring flagged the leak within 48 hours of its appearance.</p>
+</div>
 
 ## Executive Summary
 
@@ -11,7 +16,7 @@ permalink: /investigations/emberforge-source-code-theft/
 **Incident Severity:** `High`  
 **Incident Status:** `Investigation Completed`
 
-### Incident Overview
+### Incident Overview  
 
 On `2026-01-30`, EmberForge Studios experienced a multi-stage intrusion that started on an artist workstation and later spread to a server and Domain Controller. The earliest confirmed malicious activity in the reviewed telemetry occurred on `EC2AMAZ-B9GHHO6.emberforge.local`, where user `lmartin` extracted a downloaded archive, mounted `EmberForge_Review.iso`, and then executed `D:\review.dll` through `rundll32.exe`.
 
