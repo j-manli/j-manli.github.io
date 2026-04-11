@@ -269,3 +269,60 @@ li + li {
 .feature-link {
   font-weight: 600;
 }
+
+/* Investigations landing page */
+.investigation-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.investigation-card {
+  background: linear-gradient(180deg, #171a21 0%, #13171d 100%);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 1.25rem 1.35rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+
+.investigation-card h3 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.investigation-card p {
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.investigation-label {
+  color: var(--accent-soft);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.investigation-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+  margin-bottom: 0.8rem;
+}
+
+.investigation-tags span {
+  color: var(--accent);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.investigation-link-row {
+  margin-top: 0.9rem;
+}
