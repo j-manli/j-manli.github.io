@@ -34,7 +34,3 @@ Above all else, I want to be able to track and see how my thinking and methodolo
     </p>
   </div>
 </div>
-
-## Investigations
-
-- [EmberForge Source Code Theft](/investigations/emberforge-source-code-theft/)
