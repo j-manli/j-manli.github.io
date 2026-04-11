@@ -3,7 +3,7 @@ title: "Investigations"
 permalink: /investigations/
 ---
 
-[Home](/) | [Investigations](/investigations/)
+[Home](/)
 
 # Investigations
 
