@@ -191,6 +191,30 @@ ol {
   padding-left: 1.4rem;
 }
 
+/* Custom callout boxes for GitHub Pages */
+.callout {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  margin: 1.25rem 0;
+}
+
+.callout-title {
+  color: var(--text);
+  font-weight: 700;
+  margin-bottom: 0.45rem;
+}
+
+.callout p:last-child {
+  margin-bottom: 0;
+}
+
+.callout.note {
+  background: #131920;
+}
+
 li + li {
   margin-top: 0.25rem;
 }
