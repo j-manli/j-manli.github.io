@@ -1,5 +1,4 @@
 ---
-layout: page
 title: "Threat Hunting and Incident Response Portfolio"
 permalink: /
 ---
