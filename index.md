@@ -3,7 +3,7 @@ title: "Threat Hunting and Incident Response Portfolio"
 permalink: /
 ---
 
-[Home](/) | [Investigations](/investigations/)
+### [Home](/) | [Investigations](/investigations/)
 
 <div class="callout note">
   <div class="callout-title">What this site is</div>
