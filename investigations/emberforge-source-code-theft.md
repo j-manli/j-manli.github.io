@@ -1,3 +1,8 @@
+---
+title: "EmberForge Source Code Theft"
+permalink: /investigations/emberforge-source-code-theft/
+---
+
 # Security Incident Report
 
 ## Executive Summary
