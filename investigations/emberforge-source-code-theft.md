@@ -1,5 +1,4 @@
 ---
-layout: page
 title: "EmberForge Source Code Theft"
 permalink: /investigations/emberforge-source-code-theft/
 ---
