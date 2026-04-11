@@ -3,6 +3,8 @@ title: "Threat Hunting and Incident Response Portfolio"
 permalink: /
 ---
 
+[Home](/) | [Investigations](/investigations/)
+
 <div class="callout note">
   <div class="callout-title">What this site is</div>
   <p>This is a collection of threat hunts, incident investigations, and technical write-ups built from telemetry, timelines, and evidence. My goal here is to show not just what happened, but how an investigation comes together.</p>
