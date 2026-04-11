@@ -327,3 +327,44 @@ li + li {
 .investigation-link-row {
   margin-top: 0.9rem;
 }
+
+/* ATT&CK styling */
+.attack-mapping {
+  margin-top: 0.85rem;
+  margin-bottom: 0.6rem;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+}
+
+.attack-mapping strong {
+  color: var(--text);
+}
+
+.attack-mapping code {
+  color: #ffb06b;
+  background: #1a1714;
+  border: 1px solid #3a2b20;
+  padding: 0.1rem 0.32rem;
+  border-radius: 4px;
+  font-size: 0.93em;
+}
+
+.attack-mapping-inline {
+  margin-top: 0.6rem;
+  margin-bottom: 0.8rem;
+  color: var(--text-soft);
+  font-size: 0.96rem;
+}
+
+.attack-mapping-inline strong {
+  color: var(--text);
+}
+
+.attack-mapping-inline code {
+  color: #ffb06b;
+  background: #1a1714;
+  border: 1px solid #3a2b20;
+  padding: 0.1rem 0.32rem;
+  border-radius: 4px;
+  font-size: 0.93em;
+}
