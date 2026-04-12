@@ -6,15 +6,13 @@ permalink: /
 ### [Home](/) | [Investigations](/investigations/)
 
 <div class="callout note">
-  <div class="callout-title">What this site is</div>
-  <p>This is a collection of threat hunts, incident investigations, and technical write-ups built from telemetry, timelines, and evidence. My goal here is to show not just what happened, but how an investigation comes together.</p>
+  <div class="callout-title">Hi there.</div>
+  <p>This is a collection of threat hunts, incident investigations, and technical write-ups built from telemetry, timelines, and evidence. Its main purpose is to document my process and thinking and show me where I've 
+    improved, and where I still need improving.</p>
 </div>
-
-I built this site to document cases in a way that feels readable, grounded, and useful to other analysts. Each write-up focuses on following the evidence, making careful pivots, and turning messy findings into a clear report.
 
 ## What you'll find here
 
-- Incident reports built from process, network, DNS, file, registry, cloud sign-in, and mailbox telemetry
 - Technical timelines that trace attacker activity from initial access through impact
 - Clear pivots and reasoning, not just final answers
 - Write-ups that balance technical depth with readable reporting
