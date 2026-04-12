@@ -2,6 +2,7 @@
 title: "MFA Fatigue BEC in Microsoft 365"
 permalink: /investigations/mfa-fatigue-bec-m365/
 ---
+### [Home](/) | [Investigations](/investigations/)
 
 # Security Incident Report
 
