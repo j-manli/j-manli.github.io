@@ -13,36 +13,6 @@ This section collects full case write-ups built from telemetry, timelines, and e
 
   <div class="investigation-card">
     <p class="investigation-label">Case Report</p>
-    <h3><a href="/investigations/emberforge-source-code-theft/">EmberForge Source Code Theft</a></h3>
-    <p>
-      A multi-stage intrusion that began on an artist workstation and expanded to a server and Domain Controller. The case follows ISO-based execution, DLL launch through <code>rundll32.exe</code>, UAC bypass, LSASS dumping, lateral movement, shadow-copy abuse to access <code>ntds.dit</code>, and exfiltration to MEGA using <code>rclone.exe</code>.
-    </p>
-
-    <div class="investigation-tags">
-      <span>Initial Access</span>
-      <span>Privilege Escalation</span>
-      <span>Credential Access</span>
-      <span>Lateral Movement</span>
-      <span>Exfiltration</span>
-    </div>
-
-    <p class="attack-mapping">
-      <strong>ATT&amp;CK:</strong>
-      <code>T1204.002</code>
-      <code>T1218.011</code>
-      <code>T1548.002</code>
-      <code>T1003.001</code>
-      <code>T1021.002</code>
-      <code>T1567.002</code>
-    </p>
-
-    <p class="investigation-link-row">
-      <a class="feature-link" href="/investigations/emberforge-source-code-theft/">Open investigation</a>
-    </p>
-  </div>
-
-  <div class="investigation-card">
-    <p class="investigation-label">Case Report</p>
     <h3><a href="/investigations/mfa-fatigue-bec-m365/">MFA Fatigue BEC in Microsoft 365</a></h3>
     <p>
       A business email compromise that began with repeated MFA prompts against a finance employee and ended in a fraudulent payment redirection attempt. The case follows suspicious sign-in activity, inbox rule abuse, internal payment-change fraud, and additional access to OneDrive and SharePoint from the same attacker session.
@@ -68,6 +38,36 @@ This section collects full case write-ups built from telemetry, timelines, and e
 
     <p class="investigation-link-row">
       <a class="feature-link" href="/investigations/mfa-fatigue-bec-m365/">Open investigation</a>
+    </p>
+  </div>
+
+  <div class="investigation-card">
+    <p class="investigation-label">Case Report</p>
+    <h3><a href="/investigations/emberforge-source-code-theft/">EmberForge Source Code Theft</a></h3>
+    <p>
+      A multi-stage intrusion that began on an artist workstation and expanded to a server and Domain Controller. The case follows ISO-based execution, DLL launch through <code>rundll32.exe</code>, UAC bypass, LSASS dumping, lateral movement, shadow-copy abuse to access <code>ntds.dit</code>, and exfiltration to MEGA using <code>rclone.exe</code>.
+    </p>
+
+    <div class="investigation-tags">
+      <span>Initial Access</span>
+      <span>Privilege Escalation</span>
+      <span>Credential Access</span>
+      <span>Lateral Movement</span>
+      <span>Exfiltration</span>
+    </div>
+
+    <p class="attack-mapping">
+      <strong>ATT&amp;CK:</strong>
+      <code>T1204.002</code>
+      <code>T1218.011</code>
+      <code>T1548.002</code>
+      <code>T1003.001</code>
+      <code>T1021.002</code>
+      <code>T1567.002</code>
+    </p>
+
+    <p class="investigation-link-row">
+      <a class="feature-link" href="/investigations/emberforge-source-code-theft/">Open investigation</a>
     </p>
   </div>
 
