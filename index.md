@@ -6,17 +6,17 @@ permalink: /
 ### [Home](/) | [Investigations](/investigations/)
 
 <div class="callout note">
-  <div class="callout-title">Hi there.</div>
+  <div class="callout-title">What this site is</div>
   <p>This is a collection of threat hunts, incident investigations, and technical write-ups built from telemetry, timelines, and evidence. My goal here is to show not just what happened, but how an investigation comes together.</p>
 </div>
 
-I want this site to document cases I've worked through (practice threat hunts/IR) in a way that feels readable, grounded, and useful to other analysts. 
-Each write-up focuses on following the evidence, making careful pivots, and (trying) to make sense of messy findings. Above all else, I want to be able to track and see how my thinking and methodology evolve (hopefully) over time.
+I built this site to document cases in a way that feels readable, grounded, and useful to other analysts. Each write-up focuses on following the evidence, making careful pivots, and turning messy findings into a clear report.
 
 ## What you'll find here
 
-- Technical timelines that trace attacker activity from initial execution through impact
-- Clear pivots and reasoning (not just final answers)
+- Incident reports built from process, network, DNS, file, registry, cloud sign-in, and mailbox telemetry
+- Technical timelines that trace attacker activity from initial access through impact
+- Clear pivots and reasoning, not just final answers
 - Write-ups that balance technical depth with readable reporting
 
 ## Featured Investigation
@@ -33,3 +33,22 @@ Each write-up focuses on following the evidence, making careful pivots, and (try
     </p>
   </div>
 </div>
+
+## Latest Investigation
+
+<div class="feature-card">
+  <div class="feature-card-content">
+    <p class="feature-label">Latest Case</p>
+    <h3><a href="/investigations/mfa-fatigue-bec-m365/">MFA Fatigue BEC in Microsoft 365</a></h3>
+    <p>
+      A business email compromise that began with repeated MFA prompts against a finance employee and ended in a fraudulent payment redirection attempt. The case follows suspicious sign-in activity, inbox rule abuse, internal payment-change fraud, and additional access to OneDrive and SharePoint from the same attacker session.
+    </p>
+    <p>
+      <a class="feature-link" href="/investigations/mfa-fatigue-bec-m365/">Read the full investigation</a>
+    </p>
+  </div>
+</div>
+
+## Explore More
+
+You can browse the full collection of case write-ups on the [Investigations](/investigations/) page.
