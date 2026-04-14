@@ -619,3 +619,75 @@ code {
     max-width: none;
   }
 }
+
+.hero-wrap {
+  min-height: calc(100vh - 185px);
+  padding-top: 0;
+}
+
+.hero-card {
+  width: min(1160px, 100%);
+}
+
+.hero-card-split {
+  padding: 34px 40px 28px;
+}
+
+.hero-grid-uneven {
+  gap: 22px;
+}
+
+.hero-title {
+  max-width: 13ch;
+  font-size: clamp(2.35rem, 4.1vw, 4.35rem);
+  line-height: 0.94;
+  margin-bottom: 12px;
+}
+
+.signal-badge {
+  margin-bottom: 14px;
+}
+
+.hero-callout {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+}
+
+.hero-intro-tight {
+  margin-bottom: 14px;
+  font-size: 0.98rem;
+  line-height: 1.68;
+}
+
+.button-row {
+  margin-bottom: 18px;
+}
+
+.hero-right {
+  gap: 12px;
+}
+
+.right-rail-card {
+  padding: 16px 16px 14px;
+}
+
+.right-rail-card h2,
+.right-rail-card h3 {
+  margin-bottom: 8px;
+}
+
+.right-rail-card p {
+  font-size: 0.92rem;
+  line-height: 1.58;
+}
+
+@media (max-width: 920px) {
+  .hero-card-split {
+    padding: 24px 20px 20px;
+  }
+
+  .hero-title {
+    max-width: 12ch;
+    font-size: clamp(2.1rem, 9vw, 3.3rem);
+  }
+}
