@@ -792,3 +792,16 @@ code {
 .button-link:hover {
   color: var(--text) !important;
 }
+
+.hero-callout {
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+  color: var(--muted) !important;
+  font-size: 1.14rem !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0.01em !important;
+  background: transparent !important;
+  border-left: 3px solid #56d6f7 !important;
+  border-radius: 0 !important;
+  padding: 4px 0 4px 14px !important;
+}
