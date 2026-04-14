@@ -1,8 +1,9 @@
 ---
 title: "MFA Fatigue BEC in Microsoft 365"
+layout: investigation
 permalink: /investigations/mfa-fatigue-bec-m365/
+summary: "A business email compromise involving MFA fatigue, inbox rule abuse, internal payment fraud attempts, and attacker cloud activity tied to the same session."
 ---
-### [Home](/) | [Investigations](/investigations/)
 
 # Security Incident Report
 
