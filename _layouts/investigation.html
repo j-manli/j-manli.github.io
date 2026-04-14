@@ -1,0 +1,21 @@
+---
+layout: default
+---
+
+<article class="report">
+  <header class="report-header">
+    <p class="signal-badge">// CASE_REPORT //</p>
+
+    <h1>{{ page.title }}</h1>
+
+    {% if page.summary %}
+      <div class="hero-callout report-callout">
+        {{ page.summary }}
+      </div>
+    {% endif %}
+  </header>
+
+  <div class="report-body">
+    {{ content }}
+  </div>
+</article>
