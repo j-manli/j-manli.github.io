@@ -1069,3 +1069,37 @@ code {
 .report-body blockquote p {
   color: var(--muted);
 }
+
+.report-body h2 {
+  position: relative;
+  padding-left: 16px;
+  padding-bottom: 8px;
+  margin-top: 2.5em;
+  margin-bottom: 0.9em;
+  font-size: 1.7rem;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  border-bottom: 1px solid rgba(86, 214, 247, 0.35);
+}
+
+.report-body h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.14em;
+  bottom: 0.18em;
+  width: 3px;
+  background: #56d6f7;
+}
+
+.report-body h3 {
+  margin-top: 2.1em;
+  margin-bottom: 0.8em;
+  padding-bottom: 6px;
+  color: var(--text);
+  font-size: 1.26rem;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
