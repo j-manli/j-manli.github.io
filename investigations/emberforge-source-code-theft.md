@@ -87,6 +87,8 @@ The most important data exposures supported by the evidence are:
 - `C:\Windows\System32\lsass.dmp` on the workstation, indicating credential material from LSASS
 - `ntds.dit` on the Domain Controller, copied from a Volume Shadow Copy into `C:\Windows\Temp\nyMdRNSp.tmp`
 
+---
+
 ## Evidence Sources & Analysis
 
 ### Initial Access and First Malicious Execution  
@@ -727,6 +729,8 @@ Taken together, this section shows more than just post-compromise activity on th
 
 > Event log clearing
 
+---
+
 ## Indicators of Compromise (IoCs)
 
 | Type | Indicator | Context |
@@ -759,6 +763,8 @@ Taken together, this section shows more than just post-compromise activity on th
 | Service Name | `QjhJMWqS` | Temporary service used for remote execution |
 | Service Name | `pGJLIKnC` | Temporary service used for remote execution |
 
+---
+
 ## Root Cause Analysis
 
 The immediate root cause supported by the reviewed telemetry was user execution of content that led to extraction of `EmberForge_Review.iso`, mounting of that ISO, and execution of `D:\review.dll` via `rundll32.exe` on `EC2AMAZ-B9GHHO6.emberforge.local`.
@@ -772,6 +778,8 @@ Several control gaps appear to have allowed the intrusion to progress:
 - The attacker was able to move laterally using SMB shares and later access the Domain Controller, which suggests segmentation or privilege boundaries were not sufficient to contain the compromise after the initial foothold.
 
 The full delivery path before the archive extraction wasn't fully reconstructed from the reviewed notes, so I don't want to overclaim a confirmed phishing chain or exact pre-execution origin. That said, the workstation execution chain itself is strongly supported by the available telemetry.
+
+---
 
 ## Technical Timeline
 
@@ -811,6 +819,8 @@ The full delivery path before the archive extraction wasn't fully reconstructed 
 | `2026-01-30 23:50:50.010` | `EC2AMAZ-EEU3IA2` | `wevtutil cl Security` |
 | `2026-01-30 23:51:06.258` | `EC2AMAZ-EEU3IA2` | `wevtutil cl System` |
 | `2026-01-30 23:52:00.378` | `EC2AMAZ-EEU3IA2` | `Security` log cleared again |
+
+---
 
 ## Nature of the Attack
 
@@ -930,6 +940,8 @@ bt5[.]api[.]mega[.]co[.]nz
 
 The clearest confirmed impact in the reviewed telemetry was theft of data from `C:\GameDev` on the server and compromise of domain credential material through access to `ntds.dit`.  
 
+---
+
 ## MITRE ATT&CK Mapping Summary
 
 The ATT&CK mappings below reflect the observed adversary tradecraft during the investigation.
@@ -952,6 +964,8 @@ The ATT&CK mappings below reflect the observed adversary tradecraft during the i
 | Persistence / Privilege Escalation | `T1098.007` Account Manipulation: Additional Local or Domain Groups | `svc_backup` was added to `Domain Admins` |
 | Persistence | `T1053.005` Scheduled Task/Job: Scheduled Task | A scheduled task named `WindowsUpdate` was created to run `update.exe` as `SYSTEM` |
 | Defense Evasion | `T1070.001` Indicator Removal: Clear Windows Event Logs | `wevtutil cl Security` and `wevtutil cl System` were used to clear logs |
+
+---
 
 ## Analyst Assessment
 
