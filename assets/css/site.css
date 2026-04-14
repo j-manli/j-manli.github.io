@@ -805,3 +805,19 @@ code {
   border-radius: 0 !important;
   padding: 4px 0 4px 14px !important;
 }
+
+
+.hero-wrap {
+  min-height: calc(100vh - 120px) !important;
+  display: grid !important;
+  place-items: center !important;
+  padding-top: 0 !important;
+}
+
+.hero-card {
+  margin: 0 auto !important;
+}
+
+.accent {
+  color: #56d6f7 !important;
+}
