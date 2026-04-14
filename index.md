@@ -16,10 +16,6 @@ permalink: /
           Threat hunting and IR scenarios I've worked through on various cyber ranges. Includes my timelines, pivots, and dead ends (it's not all pretty).
         </div>
 
-        <p class="hero-intro hero-intro-tight">
-          I wanted a place to keep the trail intact: timelines, pivots, dead ends, evidence that mattered, and the parts of the case that actually moved things forward.
-        </p>
-
         <div class="button-row">
           <a class="button-link" href="/investigations/">Browse investigations</a>
         </div>
