@@ -1,8 +1,9 @@
 ---
 title: "EmberForge Source Code Theft"
+layout: investigation
 permalink: /investigations/emberforge-source-code-theft/
+summary: "A multi-stage intrusion involving ISO-based execution, rundll32 abuse, UAC bypass, credential access, lateral movement, shadow-copy abuse, and exfiltration to MEGA."
 ---
-### [Home](/) | [Investigations](/investigations/)
 
 # Security Incident Report  
 
