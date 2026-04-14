@@ -13,22 +13,20 @@ permalink: /
         <h1 class="hero-title">TRACK <span class="accent">ATTACK</span> CHAINS</h1>
 
         <div class="hero-callout">
-          Threat hunting and incident response case files built around timelines, pivots, evidence, and the reasoning that moved each investigation forward.
+          Threat hunting and IR scenarios I've worked through on various cyber ranges. Includes my timelines, pivots, and dead ends.
         </div>
 
         <p class="hero-intro hero-intro-tight">
-          This site collects technical write-ups designed to show process, not just conclusions. Each case follows the evidence and tries to make the investigative thread easy to retrace.
+          This site is where I keep my investigations, report write-ups, and practice casework.
         </p>
 
         <div class="button-row">
           <a class="button-link" href="/investigations/">Browse investigations</a>
         </div>
 
-        <ul class="compact-list">
-          <li>Attack-chain walkthroughs grounded in case evidence</li>
-          <li>Clear pivots showing how one finding led to the next</li>
-          <li>Technical write-ups built for learning and review</li>
-        </ul>
+        <p class="hero-note">
+          Some cases are tighter. Some are rougher around the edges. That is part of the plan.
+        </p>
       </div>
 
       <aside class="hero-right">
