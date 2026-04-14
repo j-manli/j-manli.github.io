@@ -691,3 +691,37 @@ code {
     font-size: clamp(2.1rem, 9vw, 3.3rem);
   }
 }
+
+.hero-card {
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.hero-callout {
+  background: transparent;
+  border-left: 3px solid #56d6f7;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+  padding: 4px 0 4px 14px;
+  margin-bottom: 18px;
+  color: var(--text);
+  font-size: 1.12rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.hero-intro-tight {
+  color: var(--soft);
+  font-size: 0.98rem;
+  line-height: 1.68;
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.right-rail-card {
+  background: rgba(255, 255, 255, 0.015);
+}
