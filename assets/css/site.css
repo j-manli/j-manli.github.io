@@ -764,3 +764,31 @@ code {
 .right-rail-card {
   background: rgba(255, 255, 255, 0.015) !important;
 }
+
+.signal-badge,
+.button-link {
+  border-radius: 0 !important;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+  letter-spacing: 0.04em !important;
+}
+
+.signal-badge {
+  min-height: 36px !important;
+  padding: 0 13px !important;
+  color: var(--muted) !important;
+  font-size: 0.84rem !important;
+  font-weight: 600 !important;
+}
+
+.button-link {
+  min-height: 44px !important;
+  padding: 0 18px !important;
+  color: var(--muted) !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+.button-link:hover {
+  color: var(--text) !important;
+}
