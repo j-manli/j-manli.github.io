@@ -89,7 +89,7 @@ The most important data exposures supported by the evidence are:
 
 ## Evidence Sources & Analysis
 
-### 1. Initial Access and First Malicious Execution  
+### Initial Access and First Malicious Execution  
 
 The opening brief pointed to Lisa Martin’s workstation as the likely starting point, so that was the first place to anchor the timeline. To test that lead, I started with process creation events for `user_s == "lmartin"`.
 
@@ -152,7 +152,7 @@ That sequence is important because it ties the user activity, the extracted ISO,
 > DLL execution 
 
 
-### 2. Follow-on Payload Deployment and Early Injection
+### Follow-on Payload Deployment and Early Injection
 
 Once `review.dll` executed, the next question was what the attacker added to the host to continue operating. To answer that, I narrowed the view to file creation events on the workstation shortly after the DLL ran.
 
@@ -193,7 +193,7 @@ That does not stand on its own as the most important event in the case, but it m
 
 > Initial process injection into notepad.exe
 
-### 3. UAC Bypass and Local Privilege Escalation
+### UAC Bypass and Local Privilege Escalation
 
 After identifying `update.exe`, the next step was to see whether it stayed in the original user context or was elevated. Process and registry events on the workstation showed a familiar UAC bypass pattern involving `fodhelper.exe`.
 
@@ -235,11 +235,11 @@ This is one of those places where the order matters. The registry changes on the
 
 > fodhelper UAC bypass via ms-settings hijack
 
-### 4. Beaconing, Credential Access, and Discovery
+### Beaconing, Credential Access, and Discovery
 
 With a resident payload running at higher privilege, the next questions were whether it beaconed externally, whether it touched credentials, and what it learned about the environment.
 
-#### 4.1 Beacon Infrastructure
+#### Beacon Infrastructure
 
 To identify external communication tied to `update.exe`, I reviewed DNS query events for that process.
 
@@ -270,7 +270,7 @@ That does not prove full command-and-control on its own, but it does place `upda
 > DNS activity associated with update.exe
 
 
-#### 4.2 Credential Access
+#### Credential Access
 
 The next pivot was into file creation events associated with dump artifacts.
 
@@ -295,7 +295,7 @@ This was one of the clearer credential-access artifacts in the case. It also hel
 
 > LSASS dump creation
 
-#### 4.3 Discovery
+####  Discovery
 
 To see what the attacker was learning from the environment after gaining execution, I filtered process creation events to common Living Off the Land binaries.
 
@@ -324,7 +324,7 @@ This is the sort of sequence that starts to change the shape of the incident. At
 > Workstation reconnaissance activity and potential first commands after lateral movement.
 
 
-### 5. SYSTEM-Level Injection and Transition to Lateral Movement
+### SYSTEM-Level Injection and Transition to Lateral Movement
 
 The next useful pivot was figuring out how the attacker moved from a user-context payload into a more stable and privileged process.
 
@@ -349,7 +349,7 @@ This was a key turning point in the intrusion. After this event, `spoolsv.exe` b
 > Elevated process spoolsv.exe, PID 2340
 
 
-### 6. Workstation-Based Spread and Remote Access Preparation
+### Workstation-Based Spread and Remote Access Preparation
 
 Once `spoolsv.exe` became the attacker’s execution parent, I looked at its child processes to understand how the next stage of the intrusion unfolded.
 
@@ -424,7 +424,7 @@ By this point, the attacker had a privileged execution context, a remote access 
 
 > AnyDesk installation and configuration
 
-### 7. Server Compromise, Tool Staging, and Remote Execution
+### Server Compromise, Tool Staging, and Remote Execution
 
 After confirming that `update.exe` was copied to the server, the next step was to understand how the attacker operated there and whether they relied only on SMB transfer.
 
@@ -469,7 +469,7 @@ The service paths tied to those randomly named services used `%COMSPEC%`, tempor
 
 > Tool staging on the Server
 
-### 8. Collection and Archive Creation on the Server
+### Collection and Archive Creation on the Server
 
 Once the Server was clearly in play, the next question was what data the attacker actually targeted before exfiltration.
 
@@ -499,7 +499,7 @@ At that point, the collection target was no longer a guess.
 
 > Compression of the GameDev directory
 
-### 9. Exfiltration to MEGA
+### Exfiltration to MEGA
 
 After confirming the archive path, the next pivot was into the exfiltration tool and the network activity that supported it.
 
@@ -555,7 +555,7 @@ Taken together, these events support exfiltration of `gamedev.zip` to MEGA from 
 
 > Network evidence of `rclone.exe` and MEGA
 
-### 10. Domain Controller Compromise and `ntds.dit` Extraction
+### Domain Controller Compromise and `ntds.dit` Extraction
 
 The next major change in scope came from activity on the Domain Controller. To understand what happened there, I reviewed process creation for `EC2AMAZ-EEU3IA2`.
 
@@ -620,7 +620,7 @@ This is one of the stronger sequences in the entire case. It shows the attacker 
 
 > Shadow-copy abuse and `ntds.dit` extraction
 
-### 11. Domain Persistence, Privilege Escalation, and Evidence Removal
+### Domain Persistence, Privilege Escalation, and Evidence Removal
 
 Once the attacker reached the Domain Controller, the focus shifted from access to control. Up to this point, the activity already supported a serious compromise. What came next made it clear that the attacker was not just exploring the environment. They were putting down persistence, expanding privilege, and starting to clean up behind themselves.
 
