@@ -231,3 +231,23 @@ a:hover {
     min-height: auto;
   }
 }
+
+.attack-mapping {
+  margin-top: 18px;
+  color: var(--muted);
+}
+
+.attack-mapping strong {
+  color: var(--text);
+  margin-right: 8px;
+}
+
+.attack-mapping code {
+  display: inline-block;
+  margin: 6px 8px 0 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.2em 0.45em;
+  font-size: 0.9em;
+}
