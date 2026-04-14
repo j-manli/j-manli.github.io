@@ -1026,3 +1026,33 @@ code {
     font-size: clamp(2rem, 9vw, 3.4rem);
   }
 }
+.report-body h2,
+.report-body h3 {
+  position: relative;
+  padding-left: 16px;
+}
+
+.report-body h2::before,
+.report-body h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.14em;
+  bottom: 0.14em;
+  width: 3px;
+  background: #56d6f7;
+}
+
+.report-body h2 {
+  margin-top: 2.4em;
+  margin-bottom: 0.8em;
+  font-size: 1.7rem;
+  line-height: 1.08;
+}
+
+.report-body h3 {
+  margin-top: 2em;
+  margin-bottom: 0.7em;
+  font-size: 1.24rem;
+  line-height: 1.15;
+}
