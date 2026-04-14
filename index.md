@@ -17,7 +17,7 @@ permalink: /
         </div>
 
         <div class="button-row">
-          <a class="button-link" href="/investigations/">Browse investigations</a>
+          <a class="button-link" href="/investigations/">BROWSE INVESTIGATIONS</a>
         </div>
       </div>
 
