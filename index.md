@@ -10,7 +10,7 @@ permalink: /
       <div class="hero-left">
         <p class="signal-badge">// EVIDENCE_INBOUND //</p>
 
-        <h1 class="hero-title">Threat Hunt Reports</h1>
+        <h1 class="hero-title">THREAT <span class="accent">HUNT</span> REPORTS</h1>
 
         <div class="hero-callout">
           Threat hunting and IR scenarios I've worked through on various cyber ranges. Includes my timelines, pivots, and dead ends (it's not all pretty).
