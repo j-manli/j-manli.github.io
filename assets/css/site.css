@@ -1026,14 +1026,17 @@ code {
     font-size: clamp(2rem, 9vw, 3.4rem);
   }
 }
-.report-body h2,
-.report-body h3 {
+.report-body h2 {
   position: relative;
   padding-left: 16px;
+  margin-top: 2.4em;
+  margin-bottom: 0.8em;
+  font-size: 1.7rem;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
 }
 
-.report-body h2::before,
-.report-body h3::before {
+.report-body h2::before {
   content: "";
   position: absolute;
   left: 0;
@@ -1043,18 +1046,14 @@ code {
   background: #56d6f7;
 }
 
-.report-body h2 {
-  margin-top: 2.4em;
-  margin-bottom: 0.8em;
-  font-size: 1.7rem;
-  line-height: 1.08;
-}
-
 .report-body h3 {
   margin-top: 2em;
   margin-bottom: 0.7em;
-  font-size: 1.24rem;
-  line-height: 1.15;
+  color: var(--text);
+  font-size: 1.26rem;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  font-weight: 700;
 }
 
 .report-body blockquote {
