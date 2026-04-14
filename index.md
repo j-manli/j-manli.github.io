@@ -13,12 +13,8 @@ permalink: /
         <h1 class="hero-title">TRACK <span class="accent">ATTACK</span> CHAINS</h1>
 
         <div class="hero-callout">
-          Threat hunting and IR scenarios I've worked through on various cyber ranges. Includes my timelines, pivots, and dead ends.
+          Threat hunting and IR scenarios I've worked through on various cyber ranges. Includes my timelines, pivots, and dead ends. FYI, Some cases are rougher around the edges, but that's part of the process.
         </div>
-
-        <p class="hero-intro hero-intro-tight">
-          This site is where I keep my investigations, report write-ups, and practice casework. Some cases are tighter. Some are rougher around the edges. That's part of the plan.
-        </p>
 
         <div class="button-row">
           <a class="button-link" href="/investigations/">BROWSE INVESTIGATIONS</a>
