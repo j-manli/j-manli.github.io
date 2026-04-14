@@ -726,33 +726,41 @@ code {
   background: rgba(255, 255, 255, 0.015);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-.signal-badge {
-  color: #ff4d4d !important;
-  border-color: #ff4d4d !important;
-}
-
-.hero-callout {
-  border-left-color: #ff4d4d !important;
-  background: transparent !important;
-  color: #ffffff !important;
-  font-size: 1.2rem !important;
-  font-weight: 700 !important;
-}
-
 .hero-card {
   background: transparent !important;
   box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.signal-badge {
+  color: #56d6f7 !important;
+  border-color: rgba(86, 214, 247, 0.28) !important;
+  background: rgba(86, 214, 247, 0.08) !important;
+}
+
+.hero-callout {
+  background: transparent !important;
+  border-left: 3px solid #56d6f7 !important;
+  border-top: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 0 !important;
+  border-radius: 0 !important;
+  padding: 4px 0 4px 14px !important;
+  margin-bottom: 18px !important;
+  color: var(--text) !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  line-height: 1.45 !important;
+  max-width: 54ch !important;
+}
+
+.hero-intro-tight {
+  color: var(--soft) !important;
+  font-size: 0.98rem !important;
+  line-height: 1.68 !important;
+}
+
+.panel,
+.right-rail-card {
+  background: rgba(255, 255, 255, 0.015) !important;
 }
