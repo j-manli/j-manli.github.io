@@ -17,16 +17,13 @@ permalink: /
         </div>
 
         <p class="hero-intro hero-intro-tight">
-          This site is where I keep my investigations, report write-ups, and practice casework.
+          This site is where I keep my investigations, report write-ups, and practice casework. Some cases are tighter. Some are rougher around the edges. That's part of the plan.
         </p>
 
         <div class="button-row">
           <a class="button-link" href="/investigations/">Browse investigations</a>
         </div>
 
-        <p class="hero-note">
-          Some cases are tighter. Some are rougher around the edges. That is part of the plan.
-        </p>
       </div>
 
       <aside class="hero-right">
