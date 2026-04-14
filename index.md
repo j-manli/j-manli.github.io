@@ -5,36 +5,51 @@ permalink: /
 ---
 
 <div class="hero-wrap">
-  <section class="hero-card">
-    <p class="kicker">Threat Hunting · Incident Response · Case Files</p>
+  <section class="hero-card hero-card-split">
+    <div class="hero-grid-uneven">
+      <div class="hero-left">
+        <p class="signal-badge">// EVIDENCE_INBOUND //</p>
 
-    <h1 class="hero-title">Threat hunts and investigations built from evidence, timelines, and process.</h1>
+        <h1 class="hero-title">TRACK <span class="accent">ATTACK</span> CHAINS</h1>
 
-    <p class="hero-intro">
-      This site collects technical case reports built from telemetry, timelines, and investigative reasoning. The goal is simple: follow the evidence, stay grounded, and write clearly enough that someone else can retrace the case.
-    </p>
+        <div class="hero-callout">
+          Threat hunting and incident response case files built around timelines, pivots, evidence, and the reasoning that moved each investigation forward.
+        </div>
 
-    <div class="button-row">
-      <a class="button-link" href="/investigations/">Browse investigations</a>
-      <a class="button-link" href="/investigations/emberforge-source-code-theft/">Featured case</a>
-    </div>
-
-    <div class="home-grid">
-      <section class="panel">
-        <p class="panel-label">Featured Investigation</p>
-        <h2><a href="/investigations/emberforge-source-code-theft/">EmberForge Source Code Theft</a></h2>
-        <p>
-          A multi-stage intrusion that began on an artist workstation and expanded to a server and Domain Controller. The case follows ISO-based execution, DLL launch through <code>rundll32.exe</code>, UAC bypass, LSASS dumping, lateral movement, shadow-copy abuse to access <code>ntds.dit</code>, and exfiltration to MEGA using <code>rclone.exe</code>.
+        <p class="hero-intro hero-intro-tight">
+          This site collects technical write-ups designed to show process, not just conclusions. Each case follows the evidence and tries to make the investigative thread easy to retrace.
         </p>
-      </section>
 
-      <section class="panel">
-        <p class="panel-label">Latest Investigation</p>
-        <h3><a href="/investigations/mfa-fatigue-bec-m365/">MFA Fatigue BEC in Microsoft 365</a></h3>
-        <p>
-          A business email compromise that began with repeated MFA prompts against a finance employee and ended in a fraudulent payment redirection attempt.
-        </p>
-      </section>
+        <div class="button-row">
+          <a class="button-link" href="/investigations/">Browse investigations</a>
+        </div>
+
+        <ul class="compact-list">
+          <li>Attack-chain walkthroughs grounded in case evidence</li>
+          <li>Clear pivots showing how one finding led to the next</li>
+          <li>Technical write-ups built for learning and review</li>
+        </ul>
+      </div>
+
+      <aside class="hero-right">
+        <section class="panel right-rail-card">
+          <p class="panel-label">Featured Investigation</p>
+          <h2><a href="/investigations/emberforge-source-code-theft/">EmberForge Source Code Theft</a></h2>
+          <p>
+            Multi-stage intrusion involving ISO-based execution, <code>rundll32.exe</code>, UAC bypass, LSASS dumping, lateral movement, shadow-copy abuse, and exfiltration to MEGA.
+          </p>
+          <a class="text-link" href="/investigations/emberforge-source-code-theft/">Open case</a>
+        </section>
+
+        <section class="panel right-rail-card">
+          <p class="panel-label">Latest Investigation</p>
+          <h3><a href="/investigations/mfa-fatigue-bec-m365/">MFA Fatigue BEC in Microsoft 365</a></h3>
+          <p>
+            Business email compromise involving MFA fatigue, inbox rule abuse, internal payment fraud attempts, and attacker cloud activity tied to the same session.
+          </p>
+          <a class="text-link" href="/investigations/mfa-fatigue-bec-m365/">Open case</a>
+        </section>
+      </aside>
     </div>
   </section>
 </div>
