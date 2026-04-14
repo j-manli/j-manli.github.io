@@ -1056,3 +1056,17 @@ code {
   font-size: 1.24rem;
   line-height: 1.15;
 }
+
+.report-body blockquote {
+  margin: 1.4rem 0;
+  padding: 2px 0 2px 12px;
+  border-left: 2px solid rgba(86, 214, 247, 0.45);
+  color: var(--muted);
+  background: transparent;
+  font-size: 0.96rem;
+  line-height: 1.7;
+}
+
+.report-body blockquote p {
+  color: var(--muted);
+}
