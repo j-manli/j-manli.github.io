@@ -4,10 +4,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+    <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
   </head>
   <body>
-    <main>
-      {{ content }}
-    </main>
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-brand">
+          <a href="{{ '/' | relative_url }}">{{ site.title }}</a>
+        </div>
+
+        <nav class="site-nav">
+          <a href="{{ '/' | relative_url }}"{% if page.url == "/" %} class="active"{% endif %}>Home</a>
+          <a href="{{ '/investigations/' | relative_url }}"{% if page.url == "/investigations/" %} class="active"{% endif %}>Investigations</a>
+        </nav>
+      </header>
+
+      <main class="site-main">
+        {{ content }}
+      </main>
+    </div>
   </body>
 </html>
