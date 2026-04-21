@@ -1150,3 +1150,30 @@ code {
   padding: 0.22em 0.46em !important;
   border-radius: 0 !important;
 }
+
+
+
+/* Inline code only */
+.report-body p code,
+.report-body li code,
+.report-body blockquote code,
+.report-body h2 code,
+.report-body h3 code,
+.report-body h4 code,
+.report-body td code {
+  color: #63E6BE !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Fenced code blocks stay neutral */
+.report-body pre,
+.report-body pre code {
+  color: var(--text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
