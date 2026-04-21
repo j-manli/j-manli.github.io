@@ -1118,6 +1118,59 @@ code {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .report-body table {
+  width: 100%;
+  margin: 1.4rem 0;
+  border-collapse: collapse;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.015);
+  font-size: 0.97rem;
+}
+
+.report-body th,
+.report-body td {
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: top;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.report-body th {
+  color: var(--text);
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.report-body td {
+  color: var(--soft);
+}
+
+.report-body tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.012);
+}
+
+.report-body table code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
 .report-body p code,
 .report-body li code,
 .report-body blockquote code,
@@ -1151,29 +1204,3 @@ code {
   border-radius: 0 !important;
 }
 
-
-
-/* Inline code only */
-.report-body p code,
-.report-body li code,
-.report-body blockquote code,
-.report-body h2 code,
-.report-body h3 code,
-.report-body h4 code,
-.report-body td code {
-  color: #63E6BE !important;
-  background: transparent !important;
-  border: 0 !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-}
-
-/* Fenced code blocks stay neutral */
-.report-body pre,
-.report-body pre code {
-  color: var(--text) !important;
-  background: transparent !important;
-  border: 0 !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-}
