@@ -1119,44 +1119,28 @@ code {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .report-body table {
   width: 100%;
-  margin: 1.4rem 0;
-  border-collapse: collapse;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.02);
+  table-layout: fixed;
 }
 
-.report-body th,
-.report-body td {
-  padding: 12px 14px;
-  text-align: left;
-  vertical-align: top;
-  border: 1px solid rgba(255, 255, 255, 0.10);
+.report-body th:nth-child(1),
+.report-body td:nth-child(1) {
+  width: 210px;
+  white-space: nowrap;
 }
 
-.report-body th {
-  color: var(--text);
-  font-weight: 700;
-  background: rgba(255, 255, 255, 0.04);
+.report-body th:nth-child(2),
+.report-body td:nth-child(2) {
+  width: 170px;
+  white-space: nowrap;
 }
 
-.report-body td {
-  color: var(--soft);
+.report-body th:nth-child(3),
+.report-body td:nth-child(3) {
+  width: auto;
 }
 
+.report-body td:nth-child(3) {
+  word-break: break-word;
+}
