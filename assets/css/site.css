@@ -1115,11 +1115,16 @@ code {
   .report-body {
     padding: 20px 18px 24px;
   }
-}
 
-.report-body code,
-.attack-mapping code {
+
+.report-body p code,
+.report-body li code,
+.report-body blockquote code,
+.report-body h2 code,
+.report-body h3 code,
+.report-body h4 code {
   color: #63E6BE !important;
-  border-color: rgba(99, 230, 190, 0.28) !important;
-  background: rgba(99, 230, 190, 0.08) !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
 }
