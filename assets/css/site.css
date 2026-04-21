@@ -1134,13 +1134,12 @@ code {
 
 
 
-  .report-body table {
+.report-body table {
   width: 100%;
   margin: 1.4rem 0;
   border-collapse: collapse;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.015);
-  font-size: 0.97rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .report-body th,
@@ -1148,59 +1147,16 @@ code {
   padding: 12px 14px;
   text-align: left;
   vertical-align: top;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
 .report-body th {
   color: var(--text);
   font-weight: 700;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .report-body td {
   color: var(--soft);
-}
-
-.report-body tr:nth-child(even) td {
-  background: rgba(255, 255, 255, 0.012);
-}
-
-.report-body table code {
-  background: transparent;
-  border: 0;
-  padding: 0;
-}
-
-.report-body p code,
-.report-body li code,
-.report-body blockquote code,
-.report-body h2 code,
-.report-body h3 code,
-.report-body h4 code,
-.report-body td code {
-  color: #63E6BE !important;
-  background: transparent !important;
-  border: 0 !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
-}
-
-
-.report-body pre,
-.report-body pre code {
-  color: var(--text) !important;
-  background: transparent !important;
-  border: 0 !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
-}
-
-
-.attack-mapping code {
-  color: var(--soft) !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid var(--line) !important;
-  padding: 0.22em 0.46em !important;
-  border-radius: 0 !important;
 }
 
