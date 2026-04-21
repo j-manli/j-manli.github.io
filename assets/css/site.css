@@ -1116,3 +1116,10 @@ code {
     padding: 20px 18px 24px;
   }
 }
+
+.report-body code,
+.attack-mapping code {
+  color: #63E6BE !important;
+  border-color: rgba(99, 230, 190, 0.28) !important;
+  background: rgba(99, 230, 190, 0.08) !important;
+}
